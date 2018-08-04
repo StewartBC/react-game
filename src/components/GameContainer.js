@@ -8,7 +8,8 @@ import Card from "./Card";
 
 class GameContainer extends Component {
     state = {
-        message: "Click an image to begin!",
+        message: "Click a card to begin!",
+        message2: "",
         chosenCards: [],
         clickedCards: [],
         score: 0,
@@ -17,7 +18,7 @@ class GameContainer extends Component {
     };
 
     startGame() {
-        this.setState({ justLost: false });
+        this.setState({ justLost: false, clickedCards: [] });
         const allCards = cards;
         const chosenCards = [];
         for (let i = 0; i < 12; i++) {
@@ -36,18 +37,18 @@ class GameContainer extends Component {
         const clickedCards = this.state.clickedCards;
         if (this.state.clickedCards.indexOf(id) === -1) {
             clickedCards.push(id);
-            this.setState({ clickedCards });
+            this.setState({ clickedCards, message:"You guessed correctly!", message2:"" });
             this.setState({ score: this.state.score + 1 }, () => {
                 if (this.state.topScore <= this.state.score) {
                     this.setState({ topScore: this.state.score });
                 }
             });
             if (clickedCards.length === 12) {
+                this.setState({ message: "You guessed all 12 cards!", message2:"Click more cards to keep playing and increase your score!" });
                 this.startGame();
             }
         } else {
-            this.setState({ score: 0 });
-            this.setState({ justLost: true });
+            this.setState({ score: 0, justLost: true, message:"You guessed incorrectly!", message2: "Click a card to play again!" });
             setTimeout(() => {
                 this.startGame()
             }, 500);
@@ -89,7 +90,7 @@ class GameContainer extends Component {
     render() {
         return (
             <div>
-                <Header score={this.state.score} topScore={this.state.topScore} />
+                <Header score={this.state.score} topScore={this.state.topScore} message={this.state.message} message2={this.state.message2} />
                 <Container>
                     <Row>
                         <Col size="md-12">
